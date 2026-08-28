@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorry Ruciable ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #ffeef8 0%, #e0c3ff 25%, #f5d6ff 50%, #ffd6e8 75%, #fff0f5 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            position: relative;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><text y="20" font-size="24">❤️</text></svg>') 12 12, auto;
+        }
+
+        /* Animated background particles */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        .particle-large {
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 192, 203, 0.8), rgba(255, 105, 180, 0.3));
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.6);
+        }
+
+        .particle-medium {
+            width: 25px;
+            height: 25px;
+            background: radial-gradient(circle at 30% 30%, rgba(200, 150, 255, 0.8), rgba(200, 100, 255, 0.3));
+            box-shadow: 0 0 20px rgba(200, 100, 255, 0.5);
+        }
+
+        /* Heart animations */
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(30px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fallDown {
+            0% {
+                transform: translateY(-100px);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes sparkle {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 0 0 10px rgba(255, 105, 180, 0.5), 0 0 20px rgba(200, 100, 255, 0.3);
+            }
+            50% {
+                text-shadow: 0 0 20px rgba(255, 105, 180, 0.8), 0 0 40px rgba(200, 100, 255, 0.6);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes popHeart {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotateZ(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Floating hearts */
+        .heart {
+            position: fixed;
+            font-size: 30px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .heart.floating-up {
+            animation: floatUp linear forwards;
+        }
+
+        .heart.falling {
+            animation: fallDown ease-in forwards;
+        }
+
+        .heart.click {
+            position: fixed;
+            pointer-events: none;
+            font-size: 40px;
+            animation: popHeart 1s ease-out forwards;
+        }
+
+        /* Sparkles */
+        .sparkle {
+            position: fixed;
+            pointer-events: none;
+            font-size: 20px;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        /* Main container */
+        .container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            scroll-behavior: smooth;
+        }
+
+        /* Sections */
+        .section {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            animation: slideIn 1s ease-out forwards;
+        }
+
+        .section:nth-child(1) {
+            animation-delay: 0.3s;
+        }
+
+        .section:nth-child(2) {
+            animation-delay: 0.6s;
+        }
+
+        .section:nth-child(3) {
+            animation-delay: 0.9s;
+        }
+
+        .section:nth-child(4) {
+            animation-delay: 1.2s;
+        }
+
+        /* Opening screen animations */
+        .opening-text {
+            font-size: clamp(2rem, 8vw, 4rem);
+            text-align: center;
+            margin: 20px 0;
+            color: #ff69b4;
+            font-weight: 600;
+            letter-spacing: 2px;
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        .opening-text.sequence-1 {
+            animation: slideIn 1s ease-out;
+            animation-delay: 0.5s;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .opening-text.sequence-2 {
+            animation: slideIn 1s ease-out;
+            animation-delay: 2s;
+            opacity: 0;
+            animation-fill-mode: forwards;
+        }
+
+        .opening-text.sequence-3 {
+            font-size: clamp(2.5rem, 10vw, 5rem);
+            animation: glow 2s ease-in-out infinite;
+            animation-delay: 3.5s;
+            opacity: 0;
+            animation-fill-mode: forwards;
+            animation-name: slideIn, glow;
+            animation-duration: 1s, 2s;
+        }
+
+        /* Main title */
+        .main-title {
+            font-size: clamp(2.5rem, 12vw, 6rem);
+            text-align: center;
+            color: #ff69b4;
+            font-weight: 800;
+            letter-spacing: 3px;
+            animation: glow 2s ease-in-out infinite, float 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(255, 105, 180, 0.6);
+            margin: 20px 0;
+        }
+
+        /* Subtitle */
+        .subtitle {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            text-align: center;
+            color: #ff1493;
+            margin-top: 20px;
+            animation: float 4s ease-in-out infinite;
+            animation-delay: 0.5s;
+        }
+
+        /* Glassmorphism card */
+        .card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 30px;
+            padding: clamp(30px, 5vw, 60px);
+            max-width: 600px;
+            box-shadow: 0 8px 32px rgba(255, 105, 180, 0.2);
+            text-align: center;
+            animation: slideIn 1s ease-out;
+        }
+
+        .card-text {
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            color: #ff1493;
+            line-height: 1.8;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* Large heart */
+        .big-heart {
+            font-size: clamp(100px, 30vw, 200px);
+            animation: pulse 2s ease-in-out infinite;
+            margin: 30px 0;
+            filter: drop-shadow(0 0 30px rgba(255, 105, 180, 0.6));
+        }
+
+        /* Button */
+        .forgive-btn {
+            margin-top: 40px;
+            padding: 15px 40px;
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.4);
+            transition: all 0.3s ease;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .forgive-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(255, 105, 180, 0.6);
+        }
+
+        .forgive-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Success screen */
+        .success-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffeef8 0%, #e0c3ff 25%, #f5d6ff 50%, #ffd6e8 75%, #fff0f5 100%);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .success-screen.show {
+            display: flex;
+        }
+
+        .success-text {
+            font-size: clamp(2rem, 10vw, 4rem);
+            color: #ff69b4;
+            font-weight: 800;
+            text-align: center;
+            animation: glow 1s ease-in-out infinite;
+            text-shadow: 0 0 40px rgba(255, 105, 180, 0.8);
+            margin: 20px;
+        }
+
+        .success-emoji {
+            font-size: clamp(3rem, 15vw, 6rem);
+            animation: pulse 1s ease-in-out infinite;
+            margin: 20px 0;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            pointer-events: none;
+            font-size: 30px;
+            animation: confetti-fall 3s ease-in forwards;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .card {
+                padding: 30px 20px;
+                margin: 0 10px;
+            }
+
+            .opening-text {
+                letter-spacing: 1px;
+            }
+
+            .main-title {
+                letter-spacing: 2px;
+            }
+        }
+
+        /* Scroll container */
+        .scroll-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+        }
+
+        .section {
+            scroll-snap-align: start;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background particles -->
+    <div id="particle-container"></div>
+
+    <!-- Main content -->
+    <div class="scroll-container">
+        <!-- Section 1: Opening Screen -->
+        <section class="section">
+            <div class="opening-text sequence-1">Hey Ruciable… 🥺</div>
+            <div class="opening-text sequence-2">I'm really sorry ❤️</div>
+            <div class="opening-text sequence-3">SORRY RUCIABLE 💗</div>
+        </section>
+
+        <!-- Section 2: Apology Message -->
+        <section class="section">
+            <div class="card">
+                <div class="card-text">
+                    Ruciable, I'm genuinely sorry. I never wanted to hurt you or make you upset. You're important to me, and I hope you can forgive me. 🥺❤️
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Heart Section -->
+        <section class="section">
+            <div class="big-heart">❤️</div>
+            <h2 class="subtitle">Please forgive me? 🥺👉👈</h2>
+        </section>
+
+        <!-- Section 4: Final Section -->
+        <section class="section">
+            <h1 class="main-title">SORRY RUCIABLE ❤️</h1>
+            <div class="subtitle">Can we be okay again? 🥺💗</div>
+            <button class="forgive-btn" onclick="triggerExplosion()">Forgive Me ❤️</button>
+        </section>
+    </div>
+
+    <!-- Success screen -->
+    <div class="success-screen" id="successScreen">
+        <div class="success-emoji">🥹</div>
+        <div class="success-text">YAYYY! THANK YOU RUCIABLE!</div>
+        <div style="font-size: clamp(2rem, 8vw, 3rem); margin-top: 20px; animation: float 2s ease-in-out infinite;">❤️🥹💗</div>
+    </div>
+
+    <script>
+        // Create background particles
+        function createBackgroundParticles() {
+            const container = document.getElementById('particle-container');
+            const particleCount = 15;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle ' + (i % 2 === 0 ? 'particle-large' : 'particle-medium');
+                
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                const duration = 8 + Math.random() * 8;
+                const xDrift = (Math.random() - 0.5) * 200;
+
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.animation = `float ${duration}s ease-in-out infinite`;
+                particle.style.animationDelay = (Math.random() * 2) + 's';
+
+                container.appendChild(particle);
+
+                // Gentle drift animation
+                setInterval(() => {
+                    const newX = Math.random() * window.innerWidth;
+                    const newY = Math.random() * window.innerHeight;
+                    particle.style.left = newX + 'px';
+                    particle.style.top = newY + 'px';
+                }, duration * 1000);
+            }
+        }
+
+        // Create floating hearts
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart floating-up';
+            heart.textContent = '❤️';
+            heart.style.left = Math.random() * window.innerWidth + 'px';
+            heart.style.top = window.innerHeight + 'px';
+            heart.style.animationDuration = (3 + Math.random() * 3) + 's';
+            heart.style.opacity = Math.random() * 0.6 + 0.4;
+            heart.style.fontSize = (20 + Math.random() * 30) + 'px';
+
+            document.body.appendChild(heart);
+
+            setTimeout(() => heart.remove(), 6000);
+        }
+
+        // Create falling hearts
+        function createFallingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart falling';
+            heart.textContent = '💗';
+            heart.style.left = Math.random() * window.innerWidth + 'px';
+            heart.style.top = '-50px';
+            heart.style.animationDuration = (4 + Math.random() * 4) + 's';
+            heart.style.opacity = Math.random() * 0.6 + 0.3;
+            heart.style.fontSize = (25 + Math.random() * 35) + 'px';
+
+            document.body.appendChild(heart);
+
+            setTimeout(() => heart.remove(), 8000);
+        }
+
+        // Create click hearts
+        function createClickHeart(x, y) {
+            const heart = document.createElement('div');
+            heart.className = 'heart click';
+            heart.textContent = '❤️';
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+
+            document.body.appendChild(heart);
+
+            setTimeout(() => heart.remove(), 1000);
+        }
+
+        // Create sparkles
+        function createSparkle() {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.textContent = '✨';
+            sparkle.style.left = Math.random() * window.innerWidth + 'px';
+            sparkle.style.top = Math.random() * window.innerHeight + 'px';
+            sparkle.style.animationDuration = (2 + Math.random() * 2) + 's';
+            sparkle.style.animationDelay = Math.random() * 1 + 's';
+
+            document.body.appendChild(sparkle);
+
+            setTimeout(() => sparkle.remove(), 4000);
+        }
+
+        // Continuous heart generation
+        setInterval(createFloatingHeart, 300);
+        setInterval(createFallingHeart, 400);
+        setInterval(createSparkle, 1000);
+
+        // Click/touch interaction
+        document.addEventListener('click', (e) => {
+            createClickHeart(e.clientX, e.clientY);
+            createFloatingHeart();
+        });
+
+        document.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            createClickHeart(touch.clientX, touch.clientY);
+            createFloatingHeart();
+        });
+
+        // Trigger explosion on button click
+        function triggerExplosion() {
+            const btn = document.querySelector('.forgive-btn');
+            btn.style.display = 'none';
+
+            // Create massive heart explosion
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    createFloatingHeart();
+                    createFallingHeart();
+                }, i * 50);
+            }
+
+            // Create confetti
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.textContent = ['❤️', '💗', '✨', '🥺', '💕', '🎀'][Math.floor(Math.random() * 6)];
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.top = '-50px';
+                    confetti.style.fontSize = (20 + Math.random() * 40) + 'px';
+                    confetti.style.animationDuration = (2 + Math.random() * 2) + 's';
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+                    document.body.appendChild(confetti);
+
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 30);
+            }
+
+            // Show success screen
+            setTimeout(() => {
+                const successScreen = document.getElementById('successScreen');
+                successScreen.classList.add('show');
+
+                // Continue creating hearts and sparkles
+                for (let i = 0; i < 30; i++) {
+                    setTimeout(() => {
+                        createFloatingHeart();
+                        createSparkle();
+                    }, i * 100);
+                }
+            }, 1500);
+        }
+
+        // Initialize
+        createBackgroundParticles();
+
+        // Responsive check
+        window.addEventListener('resize', () => {
+            // Adjust particle positions on resize if needed
+        });
+
+        // Scroll snap behavior
+        let currentSection = 0;
+        const sections = document.querySelectorAll('.section');
+
+        // Optional: Add keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown') {
+                currentSection = Math.min(currentSection + 1, sections.length - 1);
+                sections[currentSection].scrollIntoView({ behavior: 'smooth' });
+            } else if (e.key === 'ArrowUp') {
+                currentSection = Math.max(currentSection - 1, 0);
+                sections[currentSection].scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        // Log initialization
+        console.log('💗 Sorry Ruciable website loaded! 💗');
+    </script>
+</body>
+</html>
